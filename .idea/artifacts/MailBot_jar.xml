@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="MailBot:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/MailBot_jar</output-path>
+    <root id="archive" name="MailBot.jar">
+      <element id="module-output" name="MailBot" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/Lib/jaf-1.1.1/activation.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/Lib/javax.mail.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
