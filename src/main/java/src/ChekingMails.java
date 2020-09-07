@@ -76,7 +76,7 @@ public class ChekingMails {
                 //Recherche le bon lien
                 for (String link : possibleLinks) {
                     if (link.startsWith(pattern)) {
-                        if (link.startsWith(pattern + "meeting"))
+                        if (link.startsWith(pattern + "meeting") || link.startsWith(pattern + "rec"))
                             continue;
                         else {
                             messageContent = link;
