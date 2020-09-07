@@ -10,7 +10,7 @@ public class OBSRemote {
     private final String obsAddress = "ws://localhost:4444";
     private final String obsPassword = null;
 
-    public void test() {
+    public void runStream() {
         final OBSRemoteController controller = new OBSRemoteController(obsAddress, false, obsPassword);
 
         controller.registerDisconnectCallback(new Callback() {

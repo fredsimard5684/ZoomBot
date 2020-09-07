@@ -3,6 +3,7 @@ package src;
 import com.sun.mail.imap.IMAPFolder;
 
 import java.awt.*;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -10,6 +11,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Calendar;
 import java.util.Properties;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.mail.Folder;
 import javax.mail.Message;
@@ -146,13 +149,38 @@ public class ChekingMails {
         return info;
     }
 
+    public static void executeOBSTask() {
+        //Delay the connection to obs
+        new Timer().schedule(
+                new TimerTask() {
+                    @Override
+                    public void run() {
+                        OBSRemote obsRemote = new OBSRemote();
+                        obsRemote.runStream();
+                    }
+                }, 5000
+        );
+
+        new Timer().schedule(
+                new TimerTask() {
+                    @Override
+                    public void run() {
+                        Runtime rt = Runtime.getRuntime();
+                        try {
+                            rt.exec("taskkill /F /IM obs64.exe");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        System.exit(0);
+                    }
+                },60000
+        );
+    }
+
     public static void main(String[] args) throws URISyntaxException, IOException {
         Calendar calendar = Calendar.getInstance();
         System.out.println(calendar.getTime().toString());
         int day = calendar.get(Calendar.DAY_OF_WEEK);
-
-        OBSRemote obsRemote = new OBSRemote();
-        obsRemote.test();
 
         String[] emailCredentials = getMailInfo();
         String host = "outlook.office365.com";
@@ -167,18 +195,11 @@ public class ChekingMails {
         if ( Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
             Desktop.getDesktop().browse(new URI(messageURL));
         }
-        new java.util.Timer().schedule(
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
-                        Runtime rt = Runtime.getRuntime();
-                        try {
-                            rt.exec("taskkill /F /IM obs64.exe");
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },60000
-        );
+
+        //Open up a cmd command
+        Runtime rt = Runtime.getRuntime();
+        rt.exec("cmd /c start cmd.exe /K \"cd /d C:\\Program Files\\obs-studio\\bin\\64bit && start obs64.exe");
+
+        executeOBSTask();
     }
 }
