@@ -1,0 +1,184 @@
+package src;
+
+import com.sun.mail.imap.IMAPFolder;
+
+import java.awt.*;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Calendar;
+import java.util.Properties;
+
+import javax.mail.Folder;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.NoSuchProviderException;
+import javax.mail.Session;
+import javax.mail.Store;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.*;
+
+public class ChekingMails {
+
+    public static String chek(String host, String user, String password, String messageContent, int day) {
+        try {
+            Properties properties = new Properties();
+
+            //Met les imaps propeties
+            properties.put("mail.imap.host", host);
+            properties.put("mail.imap.port", " 993");
+            properties.put("mail.imap.starttls.enable", "true");
+            Session emailSession = Session.getDefaultInstance(properties);
+
+            Store store = emailSession.getStore("imap");
+            store.connect(host, user, password);
+            Folder emailFolder = (IMAPFolder) store.getFolder("INBOX");
+            emailFolder.open(Folder.READ_ONLY);
+
+            Message messages[] = emailFolder.getMessages();
+            System.out.println("msg lenght: " + messages.length);
+
+            //Permet d'avoir le lien pour le cours de la journee
+            String[] enseignant = teacherInfo(day);
+
+            for (int i = messages.length - 1; i > messages.length - 20; i--) {
+                Message message = messages[i];
+                System.out.println("---------------------------------");
+                System.out.println("Email Number " + (i - 1));
+                System.out.println("Subject: " + message.getSubject());
+                System.out.println("From: " + message.getFrom()[0].toString());
+                String messageFrom = message.getFrom()[0].toString();
+                messageContent = message.getContent().toString();
+
+//                if (!messageFrom.contains(enseignant[0]) || !messageFrom.contains(enseignant[1]))
+//                    continue;
+                //URL de base pour zoom
+                String pattern = "https://uqtr.zoom.us/";
+
+                if (!messageContent.contains(pattern))
+                    continue;
+
+                if (messageContent.contains("<a href=\"")) {
+                    messageContent = messageContent.replace("<a href=\"", " ");
+                    messageContent = messageContent.replace("\">", " ");
+                }
+                messageContent = messageContent.replaceAll("\\<.*?\\>", " ");
+
+                String[] possibleLinks = messageContent.split("\\s+");
+
+                //Recherche le bon lien
+                for (String link : possibleLinks) {
+                    if (link.startsWith(pattern)) {
+                        if (link.startsWith(pattern + "meeting"))
+                            continue;
+                        else {
+                            messageContent = link;
+                            break;
+                        }
+                    }
+                }
+                break;
+            }
+
+            emailFolder.close();
+            store.close();
+        } catch (NoSuchProviderException e) {
+            e.printStackTrace();
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return messageContent;
+    }
+
+    public static String[] teacherInfo(int day) {
+        JSONParser jsonParser = new JSONParser();
+        String[] teacherInfos = new String[2];
+        try {
+            JSONArray a = (JSONArray) jsonParser.parse(new FileReader("./src/main/java/teachers.json"));
+
+            for (Object o : a) {
+                JSONObject prof = (JSONObject) o;
+                String dayFetch = prof.get("jour").toString();
+                int dayNumber = Integer.parseInt(dayFetch);
+                if (dayNumber == day) {
+                    teacherInfos[0] = (String) prof.get("nom");
+                    teacherInfos[1] = (String) prof.get("mail");
+                    break;
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return teacherInfos;
+    }
+
+    public static String[] getMailInfo() {
+        JSONParser jsonParser = new JSONParser();
+        String info[] = new String[2];
+        try {
+            Object obj = jsonParser.parse(new FileReader("./.idea/config.json"));
+
+            JSONObject jsonObject = (JSONObject) obj;
+
+            String email = ((JSONObject) obj).get("mail").toString();
+            String pass = ((JSONObject) obj).get("pass").toString();
+
+            info[0] = email;
+            info[1] = pass;
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return info;
+    }
+
+    public static void main(String[] args) throws URISyntaxException, IOException {
+        Calendar calendar = Calendar.getInstance();
+        System.out.println(calendar.getTime().toString());
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+
+        OBSRemote obsRemote = new OBSRemote();
+        obsRemote.test();
+
+        String[] emailCredentials = getMailInfo();
+        String host = "outlook.office365.com";
+        String username = emailCredentials[0];
+        String pass = emailCredentials[1];
+        String messageURL = "";
+
+        messageURL = chek(host, username, pass, messageURL, day);
+        System.out.println(messageURL);
+
+        //Open the link in the default browser
+        if ( Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+            Desktop.getDesktop().browse(new URI(messageURL));
+        }
+        new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        Runtime rt = Runtime.getRuntime();
+                        try {
+                            rt.exec("taskkill /F /IM obs64.exe");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },60000
+        );
+    }
+}
