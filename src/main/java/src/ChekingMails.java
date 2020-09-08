@@ -243,7 +243,7 @@ public class ChekingMails {
 
         //Open up a cmd command
         Runtime rt = Runtime.getRuntime();
-        rt.exec("cmd /c start cmd.exe /K \"cd /d C:\\Program Files\\obs-studio\\bin\\64bit && start obs64.exe");
+        rt.exec("cmd /c start cmd.exe /K \"cd /d C:\\Program Files\\obs-studio\\bin\\64bit && start obs64.exe && exit");
 
         executeOBSTask();
     }
