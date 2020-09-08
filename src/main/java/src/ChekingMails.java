@@ -207,7 +207,7 @@ public class ChekingMails {
                     }
                 }, 5000
         );
-
+        long timeInms = 11100 * 1000;
         new Timer().schedule(
                 new TimerTask() {
                     @Override
@@ -221,7 +221,7 @@ public class ChekingMails {
                         }
                         System.exit(0);
                     }
-                }, 65000
+                }, timeInms
         );
     }
 
