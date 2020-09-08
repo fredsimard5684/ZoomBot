@@ -43,7 +43,7 @@ public class ChekingMails {
             //Permet d'avoir le lien pour le cours de la journee
             String[] enseignant = teacherInfo(day);
 
-            for (int i = messages.length - 1; i > messages.length - 20; i--) {
+            for (int i = messages.length - 1; i > 0; i--) {
                 Message message = messages[i];
                 System.out.println("---------------------------------");
                 System.out.println("Email Number " + (i - 1));
@@ -211,6 +211,7 @@ public class ChekingMails {
                         Runtime rt = Runtime.getRuntime();
                         try {
                             rt.exec("taskkill /F /IM obs64.exe");
+                            rt.exec("taskkill /F /IM Zoom.exe");
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
