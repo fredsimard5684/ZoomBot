@@ -1,4 +1,4 @@
 # Default ignored files
 /shelf/
 /workspace.xml
-*.json
+./src/main/ressources/config.json
