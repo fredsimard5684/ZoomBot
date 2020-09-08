@@ -59,6 +59,7 @@ public class ChekingMails {
                 else
                     continue;
                 //URL de base pour zoom
+
                 String baseLink = "https://uqtr.zoom.us/";
                 if (!messageContent.contains(baseLink))
                     continue;
@@ -122,14 +123,14 @@ public class ChekingMails {
             int count = mimeMultipart.getCount();
             for (int i = 0; i < count; i++) {
                 BodyPart bodyPart = mimeMultipart.getBodyPart(i);
-                if(bodyPart.isMimeType("text/plain")) {
+                if (bodyPart.isMimeType("text/plain")) {
                     result = result + "\n" + bodyPart.getContent();
                     break; //Maybe??
                 } else if (bodyPart.isMimeType("text/html")) {
                     String htmlContent = (String) bodyPart.getContent();
                     //If a part of the body is a mime multipart, recurse the funtion
-                } else if(bodyPart.getContent() instanceof MimeMultipart) {
-                    result = result + getTextFromMimeMultipart((MimeMultipart)bodyPart.getContent());
+                } else if (bodyPart.getContent() instanceof MimeMultipart) {
+                    result = result + getTextFromMimeMultipart((MimeMultipart) bodyPart.getContent());
                 }
             }
         } catch (MessagingException e) {
