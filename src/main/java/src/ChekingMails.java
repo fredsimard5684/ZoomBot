@@ -3,7 +3,6 @@ package src;
 import com.sun.mail.imap.IMAPFolder;
 
 import java.awt.*;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -14,12 +13,8 @@ import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.mail.Folder;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.NoSuchProviderException;
-import javax.mail.Session;
-import javax.mail.Store;
+import javax.mail.*;
+import javax.mail.internet.MimeMultipart;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -27,7 +22,7 @@ import org.json.simple.parser.*;
 
 public class ChekingMails {
 
-    public static String chek(String host, String user, String password, String messageContent, int day) {
+    private static String chek(String host, String user, String password, String messageContent, int day) {
         try {
             Properties properties = new Properties();
 
@@ -57,12 +52,17 @@ public class ChekingMails {
                 String messageFrom = message.getFrom()[0].toString();
                 messageContent = message.getContent().toString();
 
-//                if (!messageFrom.contains(enseignant[0]) || !messageFrom.contains(enseignant[1]))
-//                    continue;
-                //URL de base pour zoom
-                String pattern = "https://uqtr.zoom.us/";
+                if (messageContent.startsWith("javax.mail")) {
+                    messageContent = getTextFromMimeMessage(message);
+                }
 
-                if (!messageContent.contains(pattern))
+                if (messageFrom.contains(enseignant[0]) || messageFrom.contains(enseignant[1]))
+                    System.out.println("Enseignant trouve");
+                else
+                    continue;
+                //URL de base pour zoom
+                String baseLink = "https://uqtr.zoom.us/";
+                if (!messageContent.contains(baseLink))
                     continue;
 
                 if (messageContent.contains("<a href=\"")) {
@@ -75,8 +75,8 @@ public class ChekingMails {
 
                 //Recherche le bon lien
                 for (String link : possibleLinks) {
-                    if (link.startsWith(pattern)) {
-                        if (link.startsWith(pattern + "meeting") || link.startsWith(pattern + "rec"))
+                    if (link.startsWith(baseLink)) {
+                        if (link.startsWith(baseLink + "meeting") || link.startsWith(baseLink + "rec"))
                             continue;
                         else {
                             messageContent = link;
@@ -84,7 +84,11 @@ public class ChekingMails {
                         }
                     }
                 }
-                break;
+
+                if (!messageContent.startsWith(baseLink))
+                    continue;
+                else
+                    break;
             }
 
             emailFolder.close();
@@ -99,7 +103,46 @@ public class ChekingMails {
         return messageContent;
     }
 
-    public static String[] teacherInfo(int day) {
+    private static String getTextFromMimeMessage(Message message) {
+        String messageContentResult = "";
+        try {
+            if (message.isMimeType("multipart/*")) {
+                MimeMultipart mimeMultipart = (MimeMultipart) message.getContent();
+                messageContentResult = getTextFromMimeMultipart(mimeMultipart);
+            }
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return messageContentResult;
+    }
+
+    private static String getTextFromMimeMultipart(MimeMultipart mimeMultipart) {
+        String result = "";
+        try {
+            int count = mimeMultipart.getCount();
+            for (int i = 0; i < count; i++) {
+                BodyPart bodyPart = mimeMultipart.getBodyPart(i);
+                if(bodyPart.isMimeType("text/plain")) {
+                    result = result + "\n" + bodyPart.getContent();
+                    break; //Maybe??
+                } else if (bodyPart.isMimeType("text/html")) {
+                    String htmlContent = (String) bodyPart.getContent();
+                    //If a part of the body is a mime multipart, recurse the funtion
+                } else if(bodyPart.getContent() instanceof MimeMultipart) {
+                    result = result + getTextFromMimeMultipart((MimeMultipart)bodyPart.getContent());
+                }
+            }
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    private static String[] teacherInfo(int day) {
         JSONParser jsonParser = new JSONParser();
         String[] teacherInfos = new String[2];
         try {
@@ -124,7 +167,7 @@ public class ChekingMails {
         return teacherInfos;
     }
 
-    public static String[] getMailInfo() {
+    private static String[] getMailInfo() {
         JSONParser jsonParser = new JSONParser();
         String info[] = new String[2];
         try {
@@ -149,7 +192,7 @@ public class ChekingMails {
         return info;
     }
 
-    public static void executeOBSTask() {
+    private static void executeOBSTask() {
         //Delay the connection to obs
         new Timer().schedule(
                 new TimerTask() {
@@ -173,7 +216,7 @@ public class ChekingMails {
                         }
                         System.exit(0);
                     }
-                },60000
+                }, 65000
         );
     }
 
@@ -182,6 +225,7 @@ public class ChekingMails {
         System.out.println(calendar.getTime().toString());
         int day = calendar.get(Calendar.DAY_OF_WEEK);
 
+        //Login to imap protocol
         String[] emailCredentials = getMailInfo();
         String host = "outlook.office365.com";
         String username = emailCredentials[0];
@@ -192,7 +236,7 @@ public class ChekingMails {
         System.out.println(messageURL);
 
         //Open the link in the default browser
-        if ( Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+        if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
             Desktop.getDesktop().browse(new URI(messageURL));
         }
 

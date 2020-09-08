@@ -27,11 +27,11 @@ public class OBSRemote {
                 System.out.println(version.getObsStudioVersion());
             }
         });
-            controller.startStreaming(new Callback() {
-                    @Override
-                    public void run(ResponseBase response) {
-                        System.out.println("Streaming started: " + response.getStatus());
-                    }
-                });
+        controller.startStreaming(new Callback() {
+            @Override
+            public void run(ResponseBase response) {
+                System.out.println("Streaming started: " + response.getStatus());
+            }
+        });
     }
 }
