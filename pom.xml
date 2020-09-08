@@ -10,15 +10,31 @@
 
     <groupId>groupId</groupId>
     <artifactId>MailBot</artifactId>
-    <!-- https://mvnrepository.com/artifact/net.twasi/obs-websocket-java -->
+
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/net.twasi/obs-websocket-java -->
         <dependency>
             <groupId>net.twasi</groupId>
             <artifactId>obs-websocket-java</artifactId>
             <version>1.0.5</version>
         </dependency>
+
     </dependencies>
     <version>1.0-SNAPSHOT</version>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
     
 </project>

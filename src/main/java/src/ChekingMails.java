@@ -3,9 +3,7 @@ package src;
 import com.sun.mail.imap.IMAPFolder;
 
 import java.awt.*;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Calendar;
@@ -146,7 +144,10 @@ public class ChekingMails {
         JSONParser jsonParser = new JSONParser();
         String[] teacherInfos = new String[2];
         try {
-            JSONArray a = (JSONArray) jsonParser.parse(new FileReader("./src/main/java/teachers.json"));
+            InputStream inputStream = ChekingMails.class.getClassLoader().getResourceAsStream("teachers.json");
+            Reader reader = new InputStreamReader(inputStream);
+            JSONArray a = (JSONArray) jsonParser.parse(reader);
+            reader.close();
 
             for (Object o : a) {
                 JSONObject prof = (JSONObject) o;
@@ -171,7 +172,10 @@ public class ChekingMails {
         JSONParser jsonParser = new JSONParser();
         String info[] = new String[2];
         try {
-            Object obj = jsonParser.parse(new FileReader("./.idea/config.json"));
+            InputStream inputStream = ChekingMails.class.getClassLoader().getResourceAsStream("config.json");
+            Reader reader = new InputStreamReader(inputStream);
+            Object obj = jsonParser.parse(reader);
+            reader.close();
 
             JSONObject jsonObject = (JSONObject) obj;
 
@@ -188,7 +192,6 @@ public class ChekingMails {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return info;
     }
 
