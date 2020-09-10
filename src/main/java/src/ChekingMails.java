@@ -241,6 +241,13 @@ public class ChekingMails {
         System.out.println(messageURL);
 
         //Open the link in the default browser
+
+        //Remove the &amp; after pwd
+        if (messageURL.contains("amp;")) {
+         messageURL = messageURL.replace("amp;", "");
+        }
+        System.out.println(messageURL);
+
         if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
             Desktop.getDesktop().browse(new URI(messageURL));
         }
