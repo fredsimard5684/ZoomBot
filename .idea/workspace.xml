@@ -28,8 +28,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="429c5ef2-da28-41a7-a1d7-61d620d20dab" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/test/.idea/test.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/MailBot_jar/MailBot.jar" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/MailBot_jar/MailBot.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/src/ChekingMails.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/src/ChekingMails.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/src/ChekingMails$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/src/ChekingMails$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/src/ChekingMails$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/src/ChekingMails$2.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/src/ChekingMails.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/src/ChekingMails.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -55,7 +59,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/resources" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/test" />
     <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -117,26 +121,26 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="778" y="465" key="DetectedRootsChooserDialog/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1599733056898" />
-    <state x="740" y="274" key="FileChooserDialogImpl" timestamp="1599735765927">
+    <state x="740" y="274" key="FileChooserDialogImpl" timestamp="1599850316335">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="740" y="274" key="FileChooserDialogImpl/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1599735765927" />
-    <state width="1877" height="282" key="GridCell.Tab.0.bottom" timestamp="1599735712625">
+    <state x="740" y="274" key="FileChooserDialogImpl/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1599850316335" />
+    <state width="1877" height="282" key="GridCell.Tab.0.bottom" timestamp="1599854213245">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="282" key="GridCell.Tab.0.bottom/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1599735712625" />
-    <state width="1877" height="282" key="GridCell.Tab.0.center" timestamp="1599735712625">
+    <state width="1877" height="282" key="GridCell.Tab.0.bottom/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1599854213245" />
+    <state width="1877" height="282" key="GridCell.Tab.0.center" timestamp="1599854213244">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="282" key="GridCell.Tab.0.center/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1599735712625" />
-    <state width="1877" height="282" key="GridCell.Tab.0.left" timestamp="1599735712625">
+    <state width="1877" height="282" key="GridCell.Tab.0.center/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1599854213244" />
+    <state width="1877" height="282" key="GridCell.Tab.0.left" timestamp="1599854213244">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="282" key="GridCell.Tab.0.left/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1599735712625" />
-    <state width="1877" height="282" key="GridCell.Tab.0.right" timestamp="1599735712625">
+    <state width="1877" height="282" key="GridCell.Tab.0.left/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1599854213244" />
+    <state width="1877" height="282" key="GridCell.Tab.0.right" timestamp="1599854213245">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="282" key="GridCell.Tab.0.right/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1599735712625" />
+    <state width="1877" height="282" key="GridCell.Tab.0.right/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1599854213245" />
     <state x="461" y="164" key="SettingsEditor" timestamp="1599735788607">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
