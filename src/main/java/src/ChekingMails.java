@@ -39,7 +39,7 @@ public class ChekingMails {
             System.out.println("msg lenght: " + messages.length);
 
             //Permet d'avoir le lien pour le cours de la journee
-            String[] enseignant = teacherInfo(day);
+            final String[] enseignant = teacherInfo(day);
 
             for (int i = messages.length - 1; i > 0; i--) {
                 Message message = messages[i];
@@ -47,6 +47,7 @@ public class ChekingMails {
                 System.out.println("Email Number " + (i - 1));
                 System.out.println("Subject: " + message.getSubject());
                 System.out.println("From: " + message.getFrom()[0].toString());
+
                 String messageFrom = message.getFrom()[0].toString();
                 messageContent = message.getContent().toString();
 
@@ -60,7 +61,7 @@ public class ChekingMails {
                     continue;
                 //URL de base pour zoom
 
-                String baseLink = "https://uqtr.zoom.us/";
+                final String baseLink = "https://uqtr.zoom.us/";
                 if (!messageContent.contains(baseLink))
                     continue;
 
@@ -231,10 +232,10 @@ public class ChekingMails {
         int day = calendar.get(Calendar.DAY_OF_WEEK);
 
         //Login to imap protocol
-        String[] emailCredentials = getMailInfo();
-        String host = "outlook.office365.com";
-        String username = emailCredentials[0];
-        String pass = emailCredentials[1];
+        final String[] emailCredentials = getMailInfo();
+        final String host = "outlook.office365.com";
+        final String username = emailCredentials[0];
+        final String pass = emailCredentials[1];
         String messageURL = "";
 
         messageURL = chek(host, username, pass, messageURL, day);
