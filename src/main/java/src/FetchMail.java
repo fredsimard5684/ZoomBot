@@ -92,7 +92,7 @@ public class FetchMail {
                     break;
             }
 
-            emailFolder.close();
+            emailFolder.close(true);
             store.close();
         } catch (NoSuchProviderException e) {
             e.printStackTrace();

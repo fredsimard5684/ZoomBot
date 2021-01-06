@@ -13,25 +13,12 @@ public class OBSRemote {
     public void runStream() {
         final OBSRemoteController controller = new OBSRemoteController(obsAddress, false, obsPassword);
 
-        controller.registerDisconnectCallback(new Callback() {
-            @Override
-            public void run(ResponseBase response) {
-                System.out.println("Disconnected");
-            }
+        controller.registerDisconnectCallback(response -> System.out.println("Disconnected"));
+        controller.registerConnectCallback(response -> {
+            GetVersionResponse version = (GetVersionResponse) response;
+            System.out.println("Connected!");
+            System.out.println(version.getObsStudioVersion());
         });
-        controller.registerConnectCallback(new Callback() {
-            @Override
-            public void run(ResponseBase response) {
-                GetVersionResponse version = (GetVersionResponse) response;
-                System.out.println("Connected!");
-                System.out.println(version.getObsStudioVersion());
-            }
-        });
-        controller.startStreaming(new Callback() {
-            @Override
-            public void run(ResponseBase response) {
-                System.out.println("Streaming started: " + response.getStatus());
-            }
-        });
+        controller.startStreaming(response -> System.out.println("Streaming started: " + response.getStatus()));
     }
 }
