@@ -3,6 +3,8 @@ package src;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -21,7 +23,7 @@ public class ExecuteTask {
         );
     }
 
-    public void closeAllProcess(int day) {
+    public void closeAllProcess(String[] enseignant) {
         final long TIMEINMS = 11100 * 1000;
         new Timer().schedule(
                 new TimerTask() {
@@ -43,7 +45,7 @@ public class ExecuteTask {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        moveFileToCorrectLocation(day);
+                        moveFileToCorrectLocation(enseignant);
                     }
                 }, TIMEINMS
         );
@@ -58,7 +60,7 @@ public class ExecuteTask {
 
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             while ((line = bufferedReader.readLine()) != null) {
-                stringBuilder.append(line + "\n");
+                stringBuilder.append(line).append("\n");
             }
 
         } catch (IOException e) {
@@ -67,34 +69,17 @@ public class ExecuteTask {
         return stringBuilder.toString();
     }
 
-    private void moveFileToCorrectLocation(int day) {
+    private void moveFileToCorrectLocation(String[] enseignant) {
         //The timer is to make sure that the .mkv file has been save correctly before moving it arround
         new Timer().schedule(
                 new TimerTask() {
                     @Override
                     public void run() {
                         Runtime rt = Runtime.getRuntime();
+
                         try {
-                            switch (day) {
-                                case 3:
-                                    rt.exec("cmd /c start cmd.exe /K \"cd /d C:\\Users\\Fred\\Documents\\EnregistrementCoursUQTR"
-                                            + " && move *.mkv ./Systeme && exit");
-                                    break;
-                                case 4:
-                                    rt.exec("cmd /c start cmd.exe /K \"cd /d C:\\Users\\Fred\\Documents\\EnregistrementCoursUQTR"
-                                            + " && move *.mkv ./Analyse && exit");
-                                    break;
-                                case 5:
-                                    rt.exec("cmd /c start cmd.exe /K \"cd /d C:\\Users\\Fred\\Documents\\EnregistrementCoursUQTR"
-                                            + " && move *.mkv ./Concepts && exit");
-                                    break;
-                                case 6:
-                                    rt.exec("cmd /c start cmd.exe /K \"cd /d C:\\Users\\Fred\\Documents\\EnregistrementCoursUQTR"
-                                            + " && move *.mkv ./Math && exit");
-                                    break;
-                                default:
-                                    System.out.println("No courses on this day.");
-                            }
+                            rt.exec("cmd /c start cmd.exe /K \"cd /d C:\\Users\\Fred\\Documents\\EnregistrementCoursUQTR"
+                                    + " && move *.mkv ./" + enseignant[2] + " && exit");
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

@@ -1,13 +1,15 @@
 package src;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.*;
+
 import java.awt.*;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
-
-import org.json.simple.JSONObject;
-import org.json.simple.parser.*;
+import java.util.Scanner;
 
 public class Main {
 
@@ -28,11 +30,7 @@ public class Main {
             info[0] = email;
             info[1] = pass;
 
-        } catch (ParseException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (ParseException | IOException e) {
             e.printStackTrace();
         }
         return info;
@@ -48,7 +46,7 @@ public class Main {
         rt.exec("cmd /c start cmd.exe /K \"cd /d C:\\Program Files\\obs-studio\\bin\\64bit && start obs64.exe && exit");
     }
 
-    private static String gatheringCorrectLink(int day) {
+    private static String gatheringCorrectLink(String[] enseignant) {
         final String[] emailCredentials = getMailInfo();
         final String host = "outlook.office365.com";
         final String username = emailCredentials[0];
@@ -57,7 +55,7 @@ public class Main {
 
         //Login to imap protocol
         FetchMail fetchMail = new FetchMail(host, username, pass);
-        messageURL = fetchMail.fetch(messageURL, day);
+        messageURL = fetchMail.fetch(messageURL, enseignant);
 
         System.out.println(messageURL);
 
@@ -71,11 +69,9 @@ public class Main {
     }
 
     public static void main(String[] args) throws URISyntaxException, IOException {
-        Calendar calendar = Calendar.getInstance();
-        System.out.println(calendar.getTime().toString());
 
-        int day = calendar.get(Calendar.DAY_OF_WEEK);
-        final String messageURL = gatheringCorrectLink(day);
+        final String[] enseignant = FetchMail.teacherInfo();
+        final String messageURL = gatheringCorrectLink(enseignant);
 
         openingApplications(messageURL);
 
@@ -83,6 +79,6 @@ public class Main {
         ExecuteTask executeTask = new ExecuteTask();
 
         executeTask.executeOBSTask();
-        executeTask.closeAllProcess(day);
+        executeTask.closeAllProcess(enseignant);
     }
 }

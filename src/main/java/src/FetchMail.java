@@ -9,11 +9,15 @@ import org.json.simple.parser.ParseException;
 import javax.mail.*;
 import javax.mail.internet.MimeMultipart;
 import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Properties;
 
 public class FetchMail {
 
-    private String m_host, m_user, m_password;
+    private final String m_host;
+    private final String m_user;
+    private final String m_password;
 
     public FetchMail(final String t_host, final String t_user, final String t_password) {
         m_host = t_host;
@@ -21,7 +25,7 @@ public class FetchMail {
         m_password = t_password;
     }
 
-    public String fetch(String messageContent, int day) {
+    public String fetch(String messageContent, String[] enseignant) {
         try {
             Properties properties = new Properties();
 
@@ -36,11 +40,11 @@ public class FetchMail {
             Folder emailFolder = (IMAPFolder) store.getFolder("INBOX");
             emailFolder.open(Folder.READ_ONLY);
 
-            Message messages[] = emailFolder.getMessages();
+            Message[] messages = emailFolder.getMessages();
             System.out.println("msg lenght: " + messages.length);
 
             //Permet d'avoir le lien pour le cours de la journee
-            final String[] enseignant = teacherInfo(day);
+            //final String[] enseignant = teacherInfo();
 
             for (int i = messages.length - 1; i > 0; i--) {
                 Message message = messages[i];
@@ -94,10 +98,6 @@ public class FetchMail {
 
             emailFolder.close(true);
             store.close();
-        } catch (NoSuchProviderException e) {
-            e.printStackTrace();
-        } catch (MessagingException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -111,41 +111,46 @@ public class FetchMail {
                 MimeMultipart mimeMultipart = (MimeMultipart) message.getContent();
                 messageContentResult = getTextFromMimeMultipart(mimeMultipart);
             }
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (MessagingException | IOException e) {
             e.printStackTrace();
         }
         return messageContentResult;
     }
 
     private String getTextFromMimeMultipart(MimeMultipart mimeMultipart) {
-        String result = "";
+        StringBuilder result = new StringBuilder();
         try {
             int count = mimeMultipart.getCount();
             for (int i = 0; i < count; i++) {
                 BodyPart bodyPart = mimeMultipart.getBodyPart(i);
                 if (bodyPart.isMimeType("text/plain")) {
-                    result = result + "\n" + bodyPart.getContent();
+                    result.append("\n").append(bodyPart.getContent());
                     break; //Maybe??
                 } else if (bodyPart.isMimeType("text/html")) {
                     String htmlContent = (String) bodyPart.getContent();
                     //If a part of the body is a mime multipart, recurse the funtion
                 } else if (bodyPart.getContent() instanceof MimeMultipart) {
-                    result = result + getTextFromMimeMultipart((MimeMultipart) bodyPart.getContent());
+                    result.append(getTextFromMimeMultipart((MimeMultipart) bodyPart.getContent()));
                 }
             }
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (MessagingException | IOException e) {
             e.printStackTrace();
         }
-        return result;
+        return result.toString();
     }
 
-    private String[] teacherInfo(int day) {
+    public static String[] teacherInfo() {
+        Calendar calendar = Calendar.getInstance();
+        System.out.println(calendar.getTime().toString());
+
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hhmm");
+//        String timeStr = simpleDateFormat.format(calendar.getTime());
+//        int currentTime = Integer.parseInt(timeStr);
+
         JSONParser jsonParser = new JSONParser();
-        String[] teacherInfos = new String[2];
+        String[] teacherInfos = new String[3];
         try {
             InputStream inputStream = Main.class.getClassLoader().getResourceAsStream("teachers.json");
             Reader reader = new InputStreamReader(inputStream);
@@ -155,17 +160,32 @@ public class FetchMail {
             for (Object o : a) {
                 JSONObject prof = (JSONObject) o;
                 String dayFetch = prof.get("jour").toString();
+                String timeFetch = prof.get("heure").toString();
+                timeFetch = timeFetch.substring(0, timeFetch.indexOf("h"));
+                System.out.println(timeFetch);
                 int dayNumber = Integer.parseInt(dayFetch);
+                int timeNumber = 0;
+                if (!timeFetch.equals(""))
+                {
+                    timeNumber = Integer.parseInt(timeFetch);
+                    System.out.println(timeNumber);
+                    System.out.println(hour);
+                }
+
                 if (dayNumber == day) {
+                    if (timeNumber != 0)
+                        if (!(hour == timeNumber || hour + 1 == timeNumber)) {
+                            System.out.println("Rien a cette heure");
+                            continue;
+                        }
                     teacherInfos[0] = (String) prof.get("nom");
                     teacherInfos[1] = (String) prof.get("mail");
+                    teacherInfos[2] = (String) prof.get("folder");
                     break;
                 }
             }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
+        } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
         return teacherInfos;

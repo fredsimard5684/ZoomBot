@@ -1,23 +1,38 @@
 [
   {
-    "jour" : "6",
-    "nom": "Adam Joly",
-    "mail": "Adam.Joly@uqtr.ca"
+    "jour" : "2",
+    "nom": "Mourad Badri",
+    "mail": "Mourad.Badri@uqtr.ca",
+    "heure" : "12h00",
+    "folder" : "ConceptionLogiciel"
+  },
+  {
+    "jour" : "2",
+    "nom": "Boucif Amar Bensaber",
+    "mail": "Boucif.Amar.Bensaber@uqtr.ca",
+    "heure" : "2h30",
+    "folder": "Reseau1"
   },
   {
     "jour" : "5",
-    "nom": "Fadel Toure",
-    "mail": "Fadel.Toure@uqtr.ca"
-  },
-  {
-    "jour" : "4",
-    "nom": "Linda Badri",
-    "mail": "Linda.Badri@uqtr.ca"
+    "nom": "Adam Joly",
+    "mail": "Adam.Joly@uqtr.ca",
+    "heure" : "12h00",
+    "folder": "AnalyseAlgorithme"
   },
   {
     "jour" : "3",
-    "nom" : "François Meunier",
-    "mail" : "Francois.Meunier@uqtr.ca"
+    "nom" : "Usef Faghihi",
+    "mail" : "Usef.Faghihi@uqtr.ca",
+    "heure" : "8h30",
+    "folder" : "BD2"
+  },
+  {
+    "jour" : "5",
+    "nom" : "Fadel Toure",
+    "mail" : "Fadel.Toure@uqtr.ca",
+    "heure" : "15h30",
+    "folder" : "Android1"
   }
 ]
 

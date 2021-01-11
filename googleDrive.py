@@ -8,37 +8,48 @@ def get_correct_folder():
     fileList = []
     folder = ''
 
-    if datetime.date.today().isoweekday() == 2:
-        pathFiles = sorted(pathlib.Path("C:\\Users\\Fred\\Documents\\EnregistrementCoursUQTR\\Systeme").iterdir(), key=os.path.getctime)
+    if datetime.date.today().isoweekday() == 1:
+        now = datetime.datetime.now()
+        today12am = now.replace(hour=11, minute=59, second=0, microsecond=0)
+        if now < today12am :
+            pathFiles = sorted(pathlib.Path("C:\\Users\\Fred\\Documents\\EnregistrementCoursUQTR\\Reseau1").iterdir(), key=os.path.getctime)
+            pathFiles.reverse()
+            for files in pathFiles:
+                fileList.append(files)
+            folder = '1rI1IyJ5brz2NJkJyr-33cyPtODNBKKp1'
+        else :
+            pathFiles = sorted(pathlib.Path("C:\\Users\\Fred\\Documents\\EnregistrementCoursUQTR\\ConceptionLogiciel").iterdir(), key=os.path.getctime)
+            pathFiles.reverse()
+            for files in pathFiles:
+                fileList.append(files)
+            folder = '16DWkLYLCRs_VV6ZCrha29gVv2IjY0YPM'
+
+    elif datetime.date.today().isoweekday() == 2:
+        now = datetime.datetime.now()
+        pathFiles = sorted(pathlib.Path("C:\\Users\\Fred\\Documents\\EnregistrementCoursUQTR\\BD2").iterdir(), key=os.path.getctime)
         pathFiles.reverse()
 
         for files in pathFiles:
             fileList.append(files)
-        folder = '1zgTg30SzVvSdHmIk9svz3wteWXY1oDh2'
-    
-    elif datetime.date.today().isoweekday() == 3:
-        pathFiles = sorted(pathlib.Path("C:\\Users\\Fred\\Documents\\EnregistrementCoursUQTR\\Analyse").iterdir(), key=os.path.getctime)
-        pathFiles.reverse()
-
-        for files in pathFiles:
-            fileList.append(files)
-        folder = '1qRWZYbS4npOk4-2J-KFNOqY1nug5izqq'
+        folder = '1P2WS0HSaVt-CMPPos--dvyLuQFvaYIcc'
     
     elif datetime.date.today().isoweekday() == 4:
-        pathFiles = sorted(pathlib.Path("C:\\Users\\Fred\\Documents\\EnregistrementCoursUQTR\\Concepts").iterdir(), key=os.path.getctime)
-        pathFiles.reverse()
+        now = datetime.datetime.now()
+        today15pm = now.replace(hour=15, minute=29, second=0, microsecond=0)
+        if now < today15pm :
+            pathFiles = sorted(pathlib.Path("C:\\Users\\Fred\\Documents\\EnregistrementCoursUQTR\\AnalyseAlgorithme").iterdir(), key=os.path.getctime)
+            pathFiles.reverse()
 
-        for files in pathFiles:
-            fileList.append(files)
-        folder = '1ptICWabZj1ylRh068d3MJorfHWLEQ8Z5'
-    
-    elif datetime.date.today().isoweekday() == 5:
-        pathFiles = sorted(pathlib.Path("C:\\Users\\Fred\\Documents\\EnregistrementCoursUQTR\\Math").iterdir(), key=os.path.getctime)
-        pathFiles.reverse()
+            for files in pathFiles:
+                fileList.append(files)
+            folder = '1wA3GVs_HN9m6pxUGLjJfsav2Ck57m6RP'
+        else :
+            pathFiles = sorted(pathlib.Path("C:\\Users\\Fred\\Documents\\EnregistrementCoursUQTR\\Android1").iterdir(), key=os.path.getctime)
+            pathFiles.reverse()
 
-        for files in pathFiles:
-            fileList.append(files)
-        folder = '1BHkW_DK8QNyv2z2nrzry8wOB_vVpxyHG'
+            for files in pathFiles:
+                fileList.append(files)
+            folder = '1hP0YJKlEl-aE6i2JsftdXKWHR_C9FFCA'
     
     fileInfo = {
             'path' : fileList[0],
