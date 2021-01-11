@@ -18,11 +18,13 @@ public class FetchMail {
     private final String m_host;
     private final String m_user;
     private final String m_password;
+    private final String m_port;
 
-    public FetchMail(final String t_host, final String t_user, final String t_password) {
+    public FetchMail(final String t_host, final String t_user, final String t_password, final String t_port) {
         m_host = t_host;
         m_user = t_user;
         m_password = t_password;
+        m_port = t_port;
     }
 
     public String fetch(String messageContent, String[] enseignant) {
@@ -31,7 +33,7 @@ public class FetchMail {
 
             //Met les imaps propeties
             properties.put("mail.imap.host", m_host);
-            properties.put("mail.imap.port", " 993");
+            properties.put("mail.imap.port", " " + m_port);
             properties.put("mail.imap.starttls.enable", "true");
             Session emailSession = Session.getDefaultInstance(properties);
 

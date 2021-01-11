@@ -1,24 +1,30 @@
 package src;
 
-import net.twasi.obsremotejava.callbacks.Callback;
 import net.twasi.obsremotejava.OBSRemoteController;
-import net.twasi.obsremotejava.requests.GetVersion.GetVersionResponse;
-import net.twasi.obsremotejava.requests.ResponseBase;
 
 
 public class OBSRemote {
-    private final String obsAddress = "ws://localhost:4444";
-    private final String obsPassword = null;
+    private final OBSRemoteController controller;
+
+    public OBSRemote() {
+        controller = new OBSRemoteController("ws://localhost:4444", false, null);
+        if (controller.isFailed()) { // Awaits response from OBS
+            System.out.println("[ERROR] : Cannot connect to OBS");
+        }
+    }
 
     public void runStream() {
-        final OBSRemoteController controller = new OBSRemoteController(obsAddress, false, obsPassword);
-
-        controller.registerDisconnectCallback(response -> System.out.println("Disconnected"));
         controller.registerConnectCallback(response -> {
-            GetVersionResponse version = (GetVersionResponse) response;
-            System.out.println("Connected!");
-            System.out.println(version.getObsStudioVersion());
+            System.out.println("[INFO]: Connected!");
+            System.out.println(response.getObsStudioVersion());
         });
-        controller.startStreaming(response -> System.out.println("Streaming started: " + response.getStatus()));
+
+        controller.startRecording(response -> System.out.println("[INFO]: Recording started: " + response.getStatus()));
+    }
+
+    public void stopRecording() {
+        controller.stopRecording(response -> System.out.println("[INFO]: Recording stopped: " + response.getStatus()));
+        controller.disconnect();
+        System.out.println("[INFO]: Disconnected");
     }
 }

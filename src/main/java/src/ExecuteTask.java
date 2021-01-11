@@ -9,6 +9,11 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class ExecuteTask {
+    final OBSRemote obsRemote;
+
+    public ExecuteTask() {
+        obsRemote = new OBSRemote();
+    }
 
     public void executeOBSTask() {
         //Delay the connection to obs
@@ -16,14 +21,13 @@ public class ExecuteTask {
                 new TimerTask() {
                     @Override
                     public void run() {
-                        OBSRemote obsRemote = new OBSRemote();
                         obsRemote.runStream();
                     }
                 }, 5000
         );
     }
 
-    public void closeAllProcess(String[] enseignant) {
+    public void closeAllProcess(String[] enseignant, String pathRecording) {
         final long TIMEINMS = 11100 * 1000;
         new Timer().schedule(
                 new TimerTask() {
@@ -31,6 +35,8 @@ public class ExecuteTask {
                     public void run() {
                         Runtime rt = Runtime.getRuntime();
                         try {
+                            obsRemote.stopRecording();
+
                             rt.exec("taskkill /F /IM obs64.exe");
                             rt.exec("taskkill /F /IM Zoom.exe");
 
@@ -45,7 +51,7 @@ public class ExecuteTask {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        moveFileToCorrectLocation(enseignant);
+                        moveFileToCorrectLocation(enseignant, pathRecording);
                     }
                 }, TIMEINMS
         );
@@ -69,7 +75,7 @@ public class ExecuteTask {
         return stringBuilder.toString();
     }
 
-    private void moveFileToCorrectLocation(String[] enseignant) {
+    private void moveFileToCorrectLocation(String[] enseignant, String pathRecording) {
         //The timer is to make sure that the .mkv file has been save correctly before moving it arround
         new Timer().schedule(
                 new TimerTask() {
@@ -78,7 +84,7 @@ public class ExecuteTask {
                         Runtime rt = Runtime.getRuntime();
 
                         try {
-                            rt.exec("cmd /c start cmd.exe /K \"cd /d C:\\Users\\Fred\\Documents\\EnregistrementCoursUQTR"
+                            rt.exec("cmd /c start cmd.exe /K \"cd /d " + pathRecording
                                     + " && move *.mkv ./" + enseignant[2] + " && exit");
                         } catch (IOException e) {
                             e.printStackTrace();
