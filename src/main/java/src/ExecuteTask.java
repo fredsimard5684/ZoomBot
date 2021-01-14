@@ -35,8 +35,6 @@ public class ExecuteTask {
                     public void run() {
                         Runtime rt = Runtime.getRuntime();
                         try {
-                            obsRemote.stopRecording();
-
                             rt.exec("taskkill /F /IM obs64.exe");
                             rt.exec("taskkill /F /IM Zoom.exe");
 
