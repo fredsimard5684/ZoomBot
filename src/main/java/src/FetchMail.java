@@ -29,6 +29,8 @@ public class FetchMail {
 
     public String fetch(String messageContent, String[] enseignant) {
         try {
+            if (!enseignant[3].equals("")) return enseignant[3];
+
             Properties properties = new Properties();
 
             //Met les imaps propeties
@@ -152,7 +154,7 @@ public class FetchMail {
 //        int currentTime = Integer.parseInt(timeStr);
 
         JSONParser jsonParser = new JSONParser();
-        String[] teacherInfos = new String[3];
+        String[] teacherInfos = new String[4];
         try {
             InputStream inputStream = Main.class.getClassLoader().getResourceAsStream("teachers.json");
             Reader reader = new InputStreamReader(inputStream);
@@ -183,6 +185,7 @@ public class FetchMail {
                     teacherInfos[0] = (String) prof.get("nom");
                     teacherInfos[1] = (String) prof.get("mail");
                     teacherInfos[2] = (String) prof.get("folder");
+                    teacherInfos[3] = (String) prof.get("weeklyLink");
                     break;
                 }
             }
