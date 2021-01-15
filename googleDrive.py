@@ -62,12 +62,16 @@ def get_correct_folder():
 def get_access_token():
 
     #information to get a new token
+    with open('./config.json', 'r') as myConfig:
+        config = myConfig.read()
+    
+    obj = json.loads(config)
     url = "https://oauth2.googleapis.com/token"
     data = {
-    'client_id' : '1057464476728-6tv66sjvfb31fvblpmot5hua0dict6oj.apps.googleusercontent.com',
-    'client_secret' : 'HHIEtfCUbcvyPRCm-vlmyEDT',
-    'refresh_token' : '1//05ThqPyCmDFPWCgYIARAAGAUSNwF-L9IrysCDSDRQ1CLerlYIqub5qNRFRYGBfzruBlYFmrX8pgGxreOoY9HVWGhqzMzZlZFIEAQ',
-    'grant_type' : 'refresh_token'
+    'client_id' : str(obj['client_id']),
+    'client_secret' : str(obj['client_secret']),
+    'refresh_token' : str(obj['refresh_token']),
+    'grant_type' : str(obj['grant_type'])
     }
 
     #request to get a new access token
