@@ -6,6 +6,7 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <exec.mainClass>src/main/java/src.Main</exec.mainClass>
     </properties>
 
     <groupId>groupId</groupId>
@@ -62,8 +63,18 @@
                     <mainClass>src.Main</mainClass>
                 </configuration>
             </plugin>
-
         </plugins>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>config.json</include>
+                    <include>teachers.json</include>
+                </includes>
+            </resource>
+        </resources>
+
     </build>
     
 </project>
