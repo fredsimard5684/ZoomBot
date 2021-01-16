@@ -7,9 +7,7 @@ import java.awt.*;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Scanner;
+import java.net.URL;
 
 public class Main {
 
@@ -17,7 +15,8 @@ public class Main {
         JSONParser jsonParser = new JSONParser();
         String info[] = new String[6];
         try {
-            InputStream inputStream = Main.class.getClassLoader().getResourceAsStream("config.json");
+            URL url = Main.class.getClassLoader().getResource("config.json");
+            InputStream inputStream = url.openStream();
             Reader reader = new InputStreamReader(inputStream);
             Object obj = jsonParser.parse(reader);
             reader.close();
@@ -75,7 +74,6 @@ public class Main {
     }
 
     public static void main(String[] args) throws URISyntaxException, IOException {
-
         final String[] config = getInfo();
         final String[] enseignant = FetchMail.teacherInfo();
         final String messageURL = gatheringCorrectLink(enseignant, config);

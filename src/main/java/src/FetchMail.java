@@ -9,6 +9,7 @@ import org.json.simple.parser.ParseException;
 import javax.mail.*;
 import javax.mail.internet.MimeMultipart;
 import java.io.*;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Properties;
@@ -156,7 +157,8 @@ public class FetchMail {
         JSONParser jsonParser = new JSONParser();
         String[] teacherInfos = new String[4];
         try {
-            InputStream inputStream = Main.class.getClassLoader().getResourceAsStream("teachers.json");
+            URL url = Main.class.getClassLoader().getResource("teachers.json");
+            InputStream inputStream = url.openStream();
             Reader reader = new InputStreamReader(inputStream);
             JSONArray a = (JSONArray) jsonParser.parse(reader);
             reader.close();
