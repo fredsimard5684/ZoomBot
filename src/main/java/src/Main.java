@@ -26,7 +26,7 @@ public class Main {
             String emailHost = ((JSONObject) obj).get("emailHost").toString();
             String port = ((JSONObject) obj).get("port").toString();
             String pathOBS = ((JSONObject) obj).get("pathOBS").toString();
-            String pathRecording = ((JSONObject) obj).get("pathRecording").toString();
+            String pathRecording = OSValidator.isWindows() ? ((JSONObject) obj).get("pathRecordingWin").toString() : ((JSONObject) obj).get("pathRecordingLin").toString();
 
             info[0] = email;
             info[1] = pass;

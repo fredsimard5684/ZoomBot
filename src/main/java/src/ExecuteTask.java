@@ -34,18 +34,32 @@ public class ExecuteTask {
                     @Override
                     public void run() {
                         Runtime rt = Runtime.getRuntime();
+                        String taskList = "";
                         try {
-                            rt.exec("taskkill /F /IM obs64.exe");
-                            rt.exec("taskkill /F /IM Zoom.exe");
+                            if (OSValidator.isWindows()) {
 
-                            //Get the list of task that is currently running
-                            String taskList = chekTaskList();
-
-                            //Make sure that obs is not running anymore
-                            while (taskList.contains("obs64.exe")) {
                                 rt.exec("taskkill /F /IM obs64.exe");
+                                rt.exec("taskkill /F /IM Zoom.exe");
+
+                                //Get the list of task that is currently running
                                 taskList = chekTaskList();
+
+                                //Make sure that obs is not running anymore
+                                while (taskList.contains("obs64.exe")) {
+                                    rt.exec("taskkill /F /IM obs64.exe");
+                                    taskList = chekTaskList();
+                                }
+
+                            } else {
+                                rt.exec("killall -9 obs");
+                                rt.exec("killall -9 zoom");
+                                taskList = chekTaskList();
+                                while (taskList.contains("obs")) {
+                                    rt.exec("killall -9 obs");
+                                    taskList = chekTaskList();
+                                }
                             }
+
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -59,7 +73,7 @@ public class ExecuteTask {
         String line = "";
         StringBuilder stringBuilder = new StringBuilder();
         try {
-            Process process = Runtime.getRuntime().exec("tasklist");
+            Process process = OSValidator.isWindows() ? Runtime.getRuntime().exec("tasklist") : Runtime.getRuntime().exec("top | grep zoom");
             process.getOutputStream().close();
 
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -80,17 +94,29 @@ public class ExecuteTask {
                     @Override
                     public void run() {
                         Runtime rt = Runtime.getRuntime();
-
                         try {
-                            rt.exec("cmd /c start cmd.exe /K \"cd /d " + pathRecording
-                                    + " && move *.mkv ./" + enseignant[2] + " && exit");
+                            String command = "";
+                            if (OSValidator.isWindows()) {
+                                command = "cmd /c start cmd.exe /K \"cd /d " + pathRecording
+                                        + " && move *.mkv ./" + enseignant[2] + " && exit";
+                                rt.exec(command);
+                            } else {
+                                String[] shCommand = {"/bin/sh", "-c", "mv " + pathRecording + "/*.mkv " + pathRecording + "/" + enseignant[2]};
+
+                                Process prcs = null;
+                                try {
+                                    prcs = rt.exec(shCommand);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                         //This is the last thing that will get executed so we can shutdown the program
                         System.exit(0);
                     }
-                } , 30000
+                }, 30000
         );
     }
 }

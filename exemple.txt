@@ -1,0 +1,55 @@
+This is an exemple of what the json file should look like:
+config:
+{
+  "mail" : "",
+  "pass" : "",
+  "emailHost": "",
+  "port": "",
+  "pathOBS" : "C:\\Program Files\\obs-studio\\bin\\64bit",
+  "pathRecordingWin" : "C:\\Users\\Fred\\Documents\\EnregistrementCoursUQTR",
+  "pathRecordingLin" : "/home/fredericksimard/Documents"
+}
+
+teachers:
+[
+  {
+    "jour" : "2",
+    "nom": "Mourad Badri",
+    "mail": "",
+    "heure" : "12h00",
+    "folder" : "ConceptionLogiciel",
+    "weeklyLink" : ""
+  },
+  {
+    "jour" : "2",
+    "nom": "Boucif Amar Bensaber",
+    "mail": "",
+    "heure" : "8h30",
+    "folder": "Reseau1",
+    "weeklyLink" : ""
+  },
+  {
+    "jour" : "5",
+    "nom": "Adam Joly",
+    "mail": "",
+    "heure" : "12h00",
+    "folder": "AnalyseAlgorithme",
+    "weeklyLink" : ""
+  },
+  {
+    "jour" : "7",
+    "nom" : "Usef Faghihi",
+    "mail" : "",
+    "heure" : "1h30",
+    "folder" : "BD2",
+    "weeklyLink" : ""
+  },
+  {
+    "jour" : "5",
+    "nom" : "Fadel Toure",
+    "mail" : "",
+    "heure" : "15h30",
+    "folder" : "Android1",
+    "weeklyLink" : ""
+  }
+]
