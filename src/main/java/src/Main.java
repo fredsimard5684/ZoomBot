@@ -48,7 +48,8 @@ public class Main {
 
         //Open up a cmd command
         Runtime rt = Runtime.getRuntime();
-        rt.exec("cmd /c start cmd.exe /K \"cd /d " + pathOBS + " && start obs64.exe && exit");
+        String command = OSValidator.isWindows() ? "cmd /c start cmd.exe /K \"cd /d " + pathOBS + " && start obs64.exe && exit" : "obs";
+        rt.exec(command);
     }
 
     private static String gatheringCorrectLink(String[] enseignant, String[] config) {
