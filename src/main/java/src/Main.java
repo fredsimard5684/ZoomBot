@@ -8,6 +8,7 @@ import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Scanner;
 
 public class Main {
 
@@ -74,7 +75,12 @@ public class Main {
         return messageURL;
     }
 
-    public static void main(String[] args) throws URISyntaxException, IOException {
+    public static void main(String[] args) throws URISyntaxException, IOException, ParseException {
+        GoogleDrive googleDrive = new GoogleDrive();
+        googleDrive.upload();
+
+        Scanner scanner = new Scanner(System.in);
+        scanner.nextLine();
         final String[] config = getInfo();
         final String[] enseignant = FetchMail.teacherInfo();
         final String messageURL = gatheringCorrectLink(enseignant, config);

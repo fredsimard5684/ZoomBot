@@ -52,4 +52,11 @@ teachers:
     "folder" : "Android1",
     "weeklyLink" : ""
   }
-]
+],
+drive:
+{
+    "client_id" : ".apps.googleusercontent.com",
+    "client_secret" :"T",
+    "refresh_token" : "",
+    "grant_type" : "refresh_token"
+}
