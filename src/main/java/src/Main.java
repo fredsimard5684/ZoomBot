@@ -76,11 +76,6 @@ public class Main {
     }
 
     public static void main(String[] args) throws URISyntaxException, IOException, ParseException {
-        GoogleDrive googleDrive = new GoogleDrive();
-        googleDrive.upload();
-
-        Scanner scanner = new Scanner(System.in);
-        scanner.nextLine();
         final String[] config = getInfo();
         final String[] enseignant = FetchMail.teacherInfo();
         final String messageURL = gatheringCorrectLink(enseignant, config);

@@ -1,6 +1,9 @@
 package src;
 
+import org.json.simple.parser.ParseException;
+
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
@@ -96,6 +99,7 @@ public class ExecuteTask {
                         Runtime rt = Runtime.getRuntime();
                         try {
                             String command = "";
+                            //enseigant[2] = folder
                             if (OSValidator.isWindows()) {
                                 command = "cmd /c start cmd.exe /K \"cd /d " + pathRecording
                                         + " && move *.mkv ./" + enseignant[2] + " && exit";
@@ -113,10 +117,21 @@ public class ExecuteTask {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
+                        moveToGoogleDrive(pathRecording, enseignant[2], enseignant[4]);
                         //This is the last thing that will get executed so we can shutdown the program
                         System.exit(0);
                     }
                 }, 30000
         );
+    }
+
+    private void moveToGoogleDrive(String pathRecording, String folder, String driveFolder) {
+        GoogleDrive googleDrive = new GoogleDrive();
+        File file = googleDrive.getFile(pathRecording, folder);
+        try {
+            googleDrive.upload(file, driveFolder);
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
     }
 }

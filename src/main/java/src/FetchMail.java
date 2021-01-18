@@ -155,7 +155,7 @@ public class FetchMail {
 //        int currentTime = Integer.parseInt(timeStr);
 
         JSONParser jsonParser = new JSONParser();
-        String[] teacherInfos = new String[4];
+        String[] teacherInfos = new String[5];
         try {
             URL url = Main.class.getClassLoader().getResource("teachers.json");
             InputStream inputStream = url.openStream();
@@ -188,6 +188,7 @@ public class FetchMail {
                     teacherInfos[1] = (String) prof.get("mail");
                     teacherInfos[2] = (String) prof.get("folder");
                     teacherInfos[3] = (String) prof.get("weeklyLink");
+                    teacherInfos[4] = (String) prof.get("driveFolderID");
                     break;
                 }
             }

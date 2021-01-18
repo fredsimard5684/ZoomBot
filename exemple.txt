@@ -18,7 +18,8 @@ teachers:
     "mail": "",
     "heure" : "12h00",
     "folder" : "ConceptionLogiciel",
-    "weeklyLink" : ""
+    "weeklyLink" : "",
+    "driveFolderID": ""
   },
   {
     "jour" : "2",
@@ -26,7 +27,8 @@ teachers:
     "mail": "",
     "heure" : "8h30",
     "folder": "Reseau1",
-    "weeklyLink" : ""
+    "weeklyLink" : "",
+    "driveFolderID": ""
   },
   {
     "jour" : "5",
@@ -34,15 +36,17 @@ teachers:
     "mail": "",
     "heure" : "12h00",
     "folder": "AnalyseAlgorithme",
-    "weeklyLink" : ""
+    "weeklyLink" : "",
+    "driveFolderID": ""
   },
   {
-    "jour" : "7",
+    "jour" : "3",
     "nom" : "Usef Faghihi",
     "mail" : "",
-    "heure" : "1h30",
+    "heure" : "8h30",
     "folder" : "BD2",
-    "weeklyLink" : ""
+    "weeklyLink" : "",
+    "driveFolderID": ""
   },
   {
     "jour" : "5",
@@ -50,9 +54,11 @@ teachers:
     "mail" : "",
     "heure" : "15h30",
     "folder" : "Android1",
-    "weeklyLink" : ""
+    "weeklyLink" : "",
+    "driveFolderID": ""
   }
-],
+]
+
 drive:
 {
     "client_id" : ".apps.googleusercontent.com",

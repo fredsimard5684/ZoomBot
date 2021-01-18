@@ -1,14 +1,11 @@
 package src;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.*;
-import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
@@ -16,7 +13,6 @@ import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -24,13 +20,13 @@ import org.json.simple.parser.ParseException;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class GoogleDrive {
 
@@ -86,20 +82,13 @@ public class GoogleDrive {
         return token;
     }
 
-    private String getLocation() throws IOException, ParseException {
+    private String getLocation(File file, String parentFolderID) throws IOException, ParseException {
         String accessToken = getAccessToken();
 
-        //data
-        HashMap<String, String> metadata = new HashMap<>();
-        metadata.put("name", "TESTTTTT");
-        metadata.put("mimeType", "video/x-matroska");
-        metadata.put("parents", "1hP0YJKlEl-aE6i2JsftdXKWHR_C9FFCA");
-        metadata.put("modifiedDate", "2021-01-12");
-
-        Gson gson = new Gson();
-        String json = gson.toJson(metadata);
-
-        String s = "{\"name\":\"TESTTTTT\",\"modifiedDate\":\"2021-01-12\",\"mimeType\":\"video/x-matroska\",\"parents\":[\"1hP0YJKlEl-aE6i2JsftdXKWHR_C9FFCA\"]}";
+        String s = "{\"name\":\"" +file.getName() + "\"," +
+                "\"modifiedDate\":\"" + file.lastModified() + "\"," +
+                "\"mimeType\":\"video/x-matroska\"," +
+                "\"parents\":[\"" + parentFolderID+ "\"]}";
 
         String location = "";
 
@@ -112,9 +101,8 @@ public class GoogleDrive {
 
             httpPost.setEntity(entity);
             httpPost.setHeader("Authorization", "Bearer " + accessToken);
-            httpPost.setHeader("x-upload-content-type", "video/x-mastroka; charset=UTF-8");
+            httpPost.setHeader("x-upload-content-type", "video/x-matroska");
             httpPost.setHeader("content-type", "application/json;");
-            //httpPost.setHeader("Accept", "application/json");
 
             CloseableHttpResponse response = client.execute(httpPost);
             Header[] headers = response.getAllHeaders();
@@ -133,15 +121,15 @@ public class GoogleDrive {
         return location;
     }
 
-    public void upload() throws IOException, ParseException {
-        String location = getLocation();
-        File file = new File("/home/fredericksimard/Videos/2020-11-24 13-10-09.mkv");
-        FileBody fileBody = new FileBody(file, ContentType.DEFAULT_BINARY);
+    public void upload(File file, String parentFolderID) throws IOException, ParseException {
+        String location = getLocation(file, parentFolderID);
+        FileBody fileBody = new FileBody(file);
         HttpPut put = new HttpPut(location);
 
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
         builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-        builder.addPart("upfile", fileBody);
+        builder.addPart("file", fileBody);
+        //builder.addBinaryBody("userfile", file);
         HttpEntity entity = builder.build();
 
         put.setEntity(entity);
@@ -149,8 +137,24 @@ public class GoogleDrive {
 
         try {
             HttpResponse response = client.execute(put);
+            System.out.println(response);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+    public File getFile(String pathRecording, String folder) {
+        List<Path> fileList = new ArrayList<>();
+        String slash = OSValidator.isWindows() ? "\\" : "/";
+
+        try (Stream<Path> paths = Files.walk(Paths.get(pathRecording + slash + folder))) {
+            fileList = paths.filter(Files::isRegularFile).collect(Collectors.toList());
+            fileList.sort(Comparator.comparingLong(o -> o.toFile().lastModified()));
+            Collections.reverse(fileList);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return fileList.get(0).toFile();
+    }
+
 }
