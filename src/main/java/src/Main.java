@@ -43,12 +43,18 @@ public class Main {
     }
 
     private static void openingApplications(String messageURL, String pathOBS) throws URISyntaxException, IOException {
-        if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+        Runtime rt = Runtime.getRuntime();
+        if (OSValidator.isLinux()) rt.exec("firefox " + messageURL);
+        else if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
             Desktop.getDesktop().browse(new URI(messageURL));
         }
 
         //Open up a cmd command
-        Runtime rt = Runtime.getRuntime();
+        try {
+            Thread.sleep(30000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         String command = OSValidator.isWindows() ? "cmd /c start cmd.exe /K \"cd /d " + pathOBS + " && start obs64.exe && exit" : "obs";
         rt.exec(command);
     }
