@@ -90,7 +90,7 @@ public class ExecuteTask {
         return stringBuilder.toString();
     }
 
-    private void moveFileToCorrectLocation(String[] enseignant, String pathRecording) {
+    public void moveFileToCorrectLocation(String[] enseignant, String pathRecording) {
         //The timer is to make sure that the .mkv file has been save correctly before moving it arround
         new Timer().schedule(
                 new TimerTask() {
@@ -115,6 +115,12 @@ public class ExecuteTask {
                                 }
                             }
                         } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            //This allow the folder to get updated correctly before doing the operation
+                            Thread.sleep(5000);
+                        } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                         moveToGoogleDrive(pathRecording, enseignant[2], enseignant[4]);
