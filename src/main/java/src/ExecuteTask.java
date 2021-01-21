@@ -6,8 +6,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -132,10 +130,10 @@ public class ExecuteTask {
     }
 
     private void moveToGoogleDrive(String pathRecording, String folder, String driveFolder) {
-        GoogleDrive googleDrive = new GoogleDrive();
-        File file = googleDrive.getFile(pathRecording, folder);
+        GoogleDriveUploader googleDriveUploader = new GoogleDriveUploader();
+        File file = googleDriveUploader.getFile(pathRecording, folder);
         try {
-            googleDrive.upload(file, driveFolder);
+            googleDriveUploader.upload(file, driveFolder);
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }

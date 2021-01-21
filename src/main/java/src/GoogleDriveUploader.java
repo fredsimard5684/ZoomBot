@@ -28,7 +28,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class GoogleDrive {
+public class GoogleDriveUploader {
 
     private String getAccessToken() throws IOException, ParseException {
         JSONParser jsonParser = new JSONParser();
