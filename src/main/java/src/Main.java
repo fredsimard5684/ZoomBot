@@ -11,12 +11,10 @@ public class Main {
         LoginInformation config = new LoginInformation();
         Teachers teachers = new Teachers();
 
-
         MailFetcher mailFetcher = new MailFetcher(config, teachers);
         final String messageURL = mailFetcher.gatheringCorrectLink();
 
-        //Commands that close up the correct apps after a certain time
-        TaskManager taskManager = new TaskManager();
+        TaskManager taskManager = new TaskManager(true);
 
         taskManager.openingApplications(messageURL, config.getPathOBS());
         taskManager.createOBSRemote();

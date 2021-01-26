@@ -14,6 +14,11 @@ import java.util.TimerTask;
 
 public class TaskManager {
     private OBSRemote obsRemote;
+    private boolean featureEnable;
+
+    public TaskManager (boolean featureEnable) {
+        this.featureEnable = featureEnable;
+    }
 
     public void openingApplications(String messageURL, String pathOBS) throws URISyntaxException, IOException {
         Runtime rt = Runtime.getRuntime();
@@ -141,7 +146,8 @@ public class TaskManager {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        moveToGoogleDrive(pathRecording, teachers.getFolder(), teachers.getDriveFolderID());
+                        if (featureEnable)
+                            moveToGoogleDrive(pathRecording, teachers.getFolder(), teachers.getDriveFolderID());
                         //This is the last thing that will get executed so we can shutdown the program
                         System.exit(0);
                     }
