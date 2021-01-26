@@ -2,22 +2,42 @@ package src;
 
 import org.json.simple.parser.ParseException;
 
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class ExecuteTask {
-    final OBSRemote obsRemote;
+public class TaskManager {
+    private OBSRemote obsRemote;
 
-    public ExecuteTask() {
+    public void openingApplications(String messageURL, String pathOBS) throws URISyntaxException, IOException {
+        Runtime rt = Runtime.getRuntime();
+        if (OSValidator.isLinux()) rt.exec("firefox " + messageURL);
+        else if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+            Desktop.getDesktop().browse(new URI(messageURL));
+        }
+
+        //Open up a cmd command
+        try {
+            Thread.sleep(30000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        String command = OSValidator.isWindows() ? "cmd /c start cmd.exe /K \"cd /d " + pathOBS + " && start obs64.exe && exit" : "obs";
+        rt.exec(command);
+    }
+
+    public void createOBSRemote() {
         obsRemote = new OBSRemote();
     }
 
     public void executeOBSTask() {
-        //Delay the connection to obs
+        //Delay the connection to obs to make sure that the program is open
         new Timer().schedule(
                 new TimerTask() {
                     @Override
@@ -28,7 +48,7 @@ public class ExecuteTask {
         );
     }
 
-    public void closeAllProcess(String[] enseignant, String pathRecording) {
+    public void closeAllProcess(Teachers teachers, String pathRecording) {
         final long TIMEINMS = 11100 * 1000;
         new Timer().schedule(
                 new TimerTask() {
@@ -64,7 +84,7 @@ public class ExecuteTask {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        moveFileToCorrectLocation(enseignant, pathRecording);
+                        moveFileToCorrectLocation(teachers, pathRecording);
                     }
                 }, TIMEINMS
         );
@@ -88,7 +108,7 @@ public class ExecuteTask {
         return stringBuilder.toString();
     }
 
-    public void moveFileToCorrectLocation(String[] enseignant, String pathRecording) {
+    private void moveFileToCorrectLocation(Teachers teachers, String pathRecording) {
         //The timer is to make sure that the .mkv file has been save correctly before moving it arround
         new Timer().schedule(
                 new TimerTask() {
@@ -100,10 +120,10 @@ public class ExecuteTask {
                             //enseigant[2] = folder
                             if (OSValidator.isWindows()) {
                                 command = "cmd /c start cmd.exe /K \"cd /d " + pathRecording
-                                        + " && move *.mkv ./" + enseignant[2] + " && exit";
+                                        + " && move *.mkv ./" + teachers.getFolder() + " && exit";
                                 rt.exec(command);
                             } else {
-                                String[] shCommand = {"/bin/sh", "-c", "mv " + pathRecording + "/*.mkv " + pathRecording + "/" + enseignant[2]};
+                                String[] shCommand = {"/bin/sh", "-c", "mv " + pathRecording + "/*.mkv " + pathRecording + "/" + teachers.getFolder()};
 
                                 Process prcs = null;
                                 try {
@@ -121,7 +141,7 @@ public class ExecuteTask {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        moveToGoogleDrive(pathRecording, enseignant[2], enseignant[4]);
+                        moveToGoogleDrive(pathRecording, teachers.getFolder(), teachers.getDriveFolderID());
                         //This is the last thing that will get executed so we can shutdown the program
                         System.exit(0);
                     }

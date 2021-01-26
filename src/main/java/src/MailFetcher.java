@@ -1,47 +1,51 @@
 package src;
 
 import com.sun.mail.imap.IMAPFolder;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import javax.mail.*;
 import javax.mail.internet.MimeMultipart;
 import java.io.*;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Properties;
 
-public class FetchMail {
+public class MailFetcher {
 
-    private final String m_host;
-    private final String m_user;
-    private final String m_password;
-    private final String m_port;
+    private final LoginInformation loginInformation;
+    private final Teachers teachers;
 
-    public FetchMail(final String t_host, final String t_user, final String t_password, final String t_port) {
-        m_host = t_host;
-        m_user = t_user;
-        m_password = t_password;
-        m_port = t_port;
+    public MailFetcher(LoginInformation loginInformation, Teachers teachers) {
+        this.loginInformation = loginInformation;
+        this.teachers = teachers;
     }
 
-    public String fetch(String messageContent, String[] enseignant) {
+    public String gatheringCorrectLink() {
+
+        String messageURL = "";
+        messageURL = fetch(messageURL, teachers);
+
+        System.out.println(messageURL);
+
+        //Remove the &amp; after pwd
+        if (messageURL.contains("amp;")) {
+            messageURL = messageURL.replace("amp;", "");
+        }
+        System.out.println(messageURL);
+        return messageURL;
+    }
+
+    private String fetch(String messageContent, Teachers teachers) {
         try {
-            if (!enseignant[3].equals("")) return enseignant[3];
+            if (!teachers.getWeeklyLink().equals("")) return teachers.getWeeklyLink();
 
             Properties properties = new Properties();
 
             //Met les imaps propeties
-            properties.put("mail.imap.host", m_host);
-            properties.put("mail.imap.port", " " + m_port);
+            properties.put("mail.imap.host", loginInformation.getEmailHost());
+            properties.put("mail.imap.port", " " + loginInformation.getPort());
             properties.put("mail.imap.starttls.enable", "true");
             Session emailSession = Session.getDefaultInstance(properties);
 
             Store store = emailSession.getStore("imap");
-            store.connect(m_host, m_user, m_password);
+            store.connect(loginInformation.getEmailHost(), loginInformation.getEmail(), loginInformation.getPass());
             Folder emailFolder = (IMAPFolder) store.getFolder("INBOX");
             emailFolder.open(Folder.READ_ONLY);
 
@@ -65,10 +69,9 @@ public class FetchMail {
                     messageContent = getTextFromMimeMessage(message);
                 }
 
-                if (messageFrom.contains(enseignant[0]) || messageFrom.contains(enseignant[1]))
+                if (messageFrom.contains(teachers.getName()) || messageFrom.contains(teachers.getMail()))
                     System.out.println("Enseignant trouve");
-                else
-                    continue;
+                else continue;
                 //URL de base pour zoom
 
                 final String baseLink = "https://uqtr.zoom.us/";
@@ -95,10 +98,8 @@ public class FetchMail {
                     }
                 }
 
-                if (!messageContent.startsWith(baseLink))
-                    continue;
-                else
-                    break;
+                if (!messageContent.startsWith(baseLink)) continue;
+                else break;
             }
 
             emailFolder.close(true);
@@ -142,60 +143,5 @@ public class FetchMail {
             e.printStackTrace();
         }
         return result.toString();
-    }
-
-    public static String[] teacherInfo() {
-        Calendar calendar = Calendar.getInstance();
-        System.out.println(calendar.getTime().toString());
-
-        int day = calendar.get(Calendar.DAY_OF_WEEK);
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hhmm");
-//        String timeStr = simpleDateFormat.format(calendar.getTime());
-//        int currentTime = Integer.parseInt(timeStr);
-
-        JSONParser jsonParser = new JSONParser();
-        String[] teacherInfos = new String[5];
-        try {
-            URL url = Main.class.getClassLoader().getResource("teachers.json");
-            InputStream inputStream = url.openStream();
-            Reader reader = new InputStreamReader(inputStream);
-            JSONArray a = (JSONArray) jsonParser.parse(reader);
-            reader.close();
-
-            for (Object o : a) {
-                JSONObject prof = (JSONObject) o;
-                String dayFetch = prof.get("jour").toString();
-                String timeFetch = prof.get("heure").toString();
-                timeFetch = timeFetch.substring(0, timeFetch.indexOf("h"));
-                System.out.println(timeFetch);
-                int dayNumber = Integer.parseInt(dayFetch);
-                int timeNumber = 0;
-                if (!timeFetch.equals(""))
-                {
-                    timeNumber = Integer.parseInt(timeFetch);
-                    System.out.println(timeNumber);
-                    System.out.println(hour);
-                }
-
-                if (dayNumber == day) {
-                    if (timeNumber != 0)
-                        if (!(hour == timeNumber || hour + 1 == timeNumber)) {
-                            System.out.println("Rien a cette heure");
-                            continue;
-                        }
-                    teacherInfos[0] = (String) prof.get("nom");
-                    teacherInfos[1] = (String) prof.get("mail");
-                    teacherInfos[2] = (String) prof.get("folder");
-                    teacherInfos[3] = (String) prof.get("weeklyLink");
-                    teacherInfos[4] = (String) prof.get("driveFolderID");
-                    break;
-                }
-            }
-
-        } catch (IOException | ParseException e) {
-            e.printStackTrace();
-        }
-        return teacherInfos;
     }
 }

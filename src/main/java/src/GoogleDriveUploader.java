@@ -45,7 +45,7 @@ public class GoogleDriveUploader {
         final String refresh_token = ((JSONObject) obj).get("refresh_token").toString();
         final String grant_type = ((JSONObject) obj).get("grant_type").toString();
 
-        HttpURLConnection con = (HttpURLConnection)URL.openConnection();
+        HttpURLConnection con = (HttpURLConnection) URL.openConnection();
         con.setRequestMethod("POST");
         con.setDoOutput(true);
         con.setRequestProperty("Content-Type", "application/json; utf-8");
@@ -65,7 +65,7 @@ public class GoogleDriveUploader {
             os.write(in, 0, in.length);
         }
         StringBuilder response = new StringBuilder();
-        try(BufferedReader br = new BufferedReader(
+        try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
             String responseLine = null;
             while ((responseLine = br.readLine()) != null) {
@@ -85,10 +85,10 @@ public class GoogleDriveUploader {
     private String getLocation(File file, String parentFolderID) throws IOException, ParseException {
         String accessToken = getAccessToken();
 
-        String s = "{\"name\":\"" +file.getName() + "\"," +
+        String s = "{\"name\":\"" + file.getName() + "\"," +
                 "\"modifiedDate\":\"" + file.lastModified() + "\"," +
                 "\"mimeType\":\"video/x-matroska\"," +
-                "\"parents\":[\"" + parentFolderID+ "\"]}";
+                "\"parents\":[\"" + parentFolderID + "\"]}";
 
         String location = "";
 
@@ -142,6 +142,7 @@ public class GoogleDriveUploader {
             e.printStackTrace();
         }
     }
+
     public File getFile(String pathRecording, String folder) {
         List<Path> fileList = new ArrayList<>();
         String slash = OSValidator.isWindows() ? "\\" : "/";
@@ -150,7 +151,7 @@ public class GoogleDriveUploader {
             fileList = paths.filter(Files::isRegularFile).collect(Collectors.toList());
             fileList.sort(Comparator.comparingLong(o -> o.toFile().lastModified()));
             Collections.reverse(fileList);
-            
+
         } catch (IOException e) {
             e.printStackTrace();
         }
