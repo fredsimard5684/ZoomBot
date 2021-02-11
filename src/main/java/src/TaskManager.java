@@ -148,8 +148,6 @@ public class TaskManager {
                         }
                         if (featureEnable)
                             moveToGoogleDrive(pathRecording, teachers.getFolder(), teachers.getDriveFolderID());
-                        //This is the last thing that will get executed so we can shutdown the program
-                        System.exit(0);
                     }
                 }, 30000
         );
