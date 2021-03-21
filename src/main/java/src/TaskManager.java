@@ -128,7 +128,7 @@ public class TaskManager {
                                         + " && move *.mkv ./" + teachers.getFolder() + " && exit";
                                 rt.exec(command);
                             } else {
-                                String[] shCommand = {"/bin/sh", "-c", "mv " + pathRecording + "/*.mkv " + pathRecording + "/" + teachers.getFolder()};
+                                String[] shCommand = {"/bin/sh", "-c", "mv " + pathRecording + "/*.mp4 " + pathRecording + "/" + teachers.getFolder()};
 
                                 Process prcs = null;
                                 try {

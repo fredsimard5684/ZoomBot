@@ -87,7 +87,7 @@ public class GoogleDriveUploader {
 
         String s = "{\"name\":\"" + file.getName() + "\"," +
                 "\"modifiedDate\":\"" + file.lastModified() + "\"," +
-                "\"mimeType\":\"video/x-matroska\"," +
+                "\"mimeType\":\"video/mp4\"," +
                 "\"parents\":[\"" + parentFolderID + "\"]}";
 
         String location = "";
@@ -101,7 +101,7 @@ public class GoogleDriveUploader {
 
             httpPost.setEntity(entity);
             httpPost.setHeader("Authorization", "Bearer " + accessToken);
-            httpPost.setHeader("x-upload-content-type", "video/x-matroska");
+            httpPost.setHeader("x-upload-content-type", "video/mp4");
             httpPost.setHeader("content-type", "application/json;");
 
             CloseableHttpResponse response = client.execute(httpPost);
